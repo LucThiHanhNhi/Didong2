@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -18,33 +18,35 @@ type Product = {
   image: any;
 };
 
-const Cart = () => {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: "1",
-      name: "Son Bbia",
-      price: 125000,
-      image: require("../../assets/images/2.jpg"),
-    },
-    {
-      id: "2",
-      name: "Son 3CE",
-      price: 300000,
-      image: require("../../assets/images/2.jpg"),
-    },
-    {
-      id: "3",
-      name: "Son MAC",
-      price: 500000,
-      image: require("../../assets/images/2.jpg"),
-    },
-  ]);
+//Gio hang
+const CartScreen = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("https://fakestoreapi.com/products");
+        const data = await response.json();
+        setProducts(data); // Update the products state
+        // Initialize quantities for each product
+        const initialQuantities = data.reduce((acc: any, product: Product) => {
+          acc[product.id] = 1; // Set default quantity to 1
+          return acc;
+        }, {});
+        setQuantities(initialQuantities);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError("Failed to fetch products");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>({
-    "1": 1,
-    "2": 1,
-    "3": 1,
-  });
+    fetchProducts(); // Call the fetch function when the component is rendered
+  }, []);
 
   const [selectedProducts, setSelectedProducts] = useState<{
     [key: string]: boolean;
@@ -76,6 +78,11 @@ const Cart = () => {
             delete newQuantities[id];
             return newQuantities;
           });
+          setSelectedProducts((prev) => {
+            const newSelectedProducts = { ...prev };
+            delete newSelectedProducts[id];
+            return newSelectedProducts;
+          });
         },
       },
     ]);
@@ -91,7 +98,8 @@ const Cart = () => {
   const getTotalPrice = () => {
     return products.reduce((total, product) => {
       const quantity = quantities[product.id] || 1;
-      return total + product.price * quantity;
+      const isSelected = selectedProducts[product.id];
+      return isSelected ? total + product.price * quantity : total;
     }, 0);
   };
 
@@ -100,7 +108,8 @@ const Cart = () => {
       <Image source={item.image} style={styles.productImage} />
       <View style={styles.productInfo}>
         <View style={styles.productHeader}>
-          <Text style={styles.productName}>{item.name}</Text>
+          <Text style={styles.productName}>{item.title}</Text>
+
           <TouchableOpacity onPress={() => handleRemove(item.id)}>
             <MaterialIcons name="delete" size={24} color="red" />
           </TouchableOpacity>
@@ -237,4 +246,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Cart;
+export default CartScreen;

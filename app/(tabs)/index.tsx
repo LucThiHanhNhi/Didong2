@@ -1,13 +1,7 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+import * as React from "react";
 
-import { Collapsible } from "@/components/Collapsible";
-import { ExternalLink } from "@/components/ExternalLink";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-native-paper";
-import React from "react";
 import { StyleSheet, View, TextInput, Image, Alert, Text } from "react-native";
 
 export default function RegisterScreen() {

@@ -1,10 +1,15 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Login from './login';
-import SignUp from './signup';
-import Home from './(tabs)/home';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import Login from "./login";
+import SignUp from "./signup";
+import Home from "./(tabs)/home";
 import Detail from "./(tabs)/detail";
-import CartScreen from "./(tabs)/CartScreen"
+import CartScreen from "./(tabs)/CartScreen";
 export default function TabLayout() {
   const isAuthenticated = false;
 
